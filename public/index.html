@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyMonkey Login</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:#f5f5f5;
+        }
+
+        .card{
+            width:380px;
+            background:white;
+            border-radius:12px;
+            padding:40px;
+            box-shadow:0 5px 20px rgba(0,0,0,.1);
+            text-align:center;
+        }
+
+        h1{
+            margin-bottom:10px;
+        }
+
+        p{
+            color:#666;
+            margin-bottom:30px;
+        }
+
+        .google-btn{
+            width:100%;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:12px;
+
+            padding:14px;
+            border:1px solid #ddd;
+            border-radius:8px;
+
+            background:white;
+            cursor:pointer;
+
+            font-size:16px;
+            font-weight:bold;
+
+            transition:.2s;
+        }
+
+        .google-btn:hover{
+            background:#f2f2f2;
+        }
+
+        img{
+            width:22px;
+            height:22px;
+        }
+
+        .status{
+            margin-top:25px;
+            color:gray;
+            font-size:14px;
+        }
+    </style>
+</head>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<body>
+
+    <div class="card">
+
+        <h1>🐵 MoneyMonkey</h1>
+
+        <p>AI Inflation Forecast</p>
+
+        <div
+            id="g_id_onload"
+            data-client_id="78545281751-qgm0o47a208bjpvcbpt2vd0tblitoabu.apps.googleusercontent.com"
+            data-callback="handleCredentialResponse">
+        </div>
+
+        <div
+            class="g_id_signin"
+            data-type="standard"
+            data-size="large"
+            data-theme="outline"
+            data-text="continue_with"
+            data-shape="rectangular"
+            data-logo_alignment="left">
+        </div>
+
+        <div class="status">
+            Not Logged In
+        </div>
+
+    </div>
+
+    <script>
+
+        async function handleCredentialResponse(response) {
+            console.log("Google ID Token:");
+            console.log(response.credential);
+
+            // Send the ID token to your backend for verification
+            const res = await fetch('/api/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idToken: response.credential })
+            });
+
+            console.log("Response from backend:", await res.json());
+        }
+
+    </script>
+
+</body>
+</html>
