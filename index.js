@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { connectDatabase } from "./src/config/database.js";
 
 import auth from "./src/routes/auth.route.js";
+import prediction from "./src/routes/prediction.route.js";
 
 import errorHandler from "./src/middleware/errorHandler.middleware.js";
 // import authenticate from "./src/middleware/authenticate.middleware.js"
@@ -29,6 +30,7 @@ const startServer = async () => {
 
     //Routes
     app.use("/api/auth", auth);
+    app.use("/api/predictions", prediction);
 
     app.use(errorHandler);
 
