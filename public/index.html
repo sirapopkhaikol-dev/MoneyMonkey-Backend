@@ -110,8 +110,6 @@
     <script>
 
         async function handleCredentialResponse(response) {
-            console.log("Google ID Token:");
-            console.log(response.credential);
 
             // Send the ID token to your backend for verification
             const res = await fetch('/api/auth/google', {
@@ -122,7 +120,6 @@
                 body: JSON.stringify({ idToken: response.credential })
             });
 
-            console.log("Response from backend:", await res.json());
         }
 
     </script>

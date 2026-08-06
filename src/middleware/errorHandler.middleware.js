@@ -5,7 +5,10 @@ export const errorHandler = (err, req, res, next) => {
         success: false,
         message: err.message || "Internal Server Error",
         data: null,
-        error: err.stack || null,
+        error: 
+            process.env.NODE_ENV === "production"
+                ? err.stack
+                : undefined
     });
 }
 
