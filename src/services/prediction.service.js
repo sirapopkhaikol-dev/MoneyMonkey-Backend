@@ -75,6 +75,99 @@ class PredictionService {
 
     }
 
+    static findReqHistoryPrediction = async(
+        user_id,
+        page,
+        limit,
+        min_amount,
+        max_amount,
+        min_years,
+        max_years
+    ) => {
+
+        const findHistory = await PredictionRepository.findReqHistoryPrediction(user_id, limit, page, min_amount, max_amount, min_years, max_years);
+        const totalRows = await PredictionRepository.findTotalRows(user_id);
+
+        return {
+            success: true,
+            message: "Search Prediction Request Successfully",
+            pagination: {
+                page: page,
+                limit: limit,
+                totalRows: totalRows
+            },
+            range: {
+                min_amount: min_amount,
+                max_amount: max_amount,
+                min_years: min_years,
+                max_years: max_years,
+            },
+            data: {
+                rowCount : findHistory.rowCount,
+                predictions: findHistory.rows
+            }
+        }
+
+    }
+
+    static findResultHistoryByPredictionId = async(
+        user_id,
+        prediction_id
+    ) => {
+        const findHistory = await PredictionRepository.findResultHistoryByPredictionId(user_id, prediction_id);
+
+        if (findHistory.rowCount === 0) { throw new Error("prediction not found."); }
+
+        let formatResult = {
+            prediction_id: findHistory.rows[0].prediction_id,
+            initial_amount: findHistory.rows[0].initial_amount,
+            n_years: findHistory.rows[0].n_years,
+            created_at: findHistory.rows[0].created_at,
+            results:[]
+        }   
+        
+        findHistory.rows.forEach(prediction => {
+            formatResult.results.push({
+                year: prediction.year,
+                inflation_rate: prediction.inflation_rate,
+                amount: prediction.amount
+            })
+        });
+
+        return {
+            success: true,
+            message: "Search Prediction Result Successfully",
+            data: {
+                rowCount : findHistory.rowCount,
+                predictions: formatResult
+            }
+            
+        }
+
+    }
+
+    static findPredictionOverview = async(
+        user_id
+    ) => {
+
+        const overView = await PredictionRepository.findPredictionOverview(user_id);
+
+        if (findHistory.rowCount === 0) { throw new Error("prediction not found."); }
+
+        
+
+        return {
+            success: true,
+            message: "Search Prediction Result Successfully",
+            data: {
+                rowCount : findHistory.rowCount,
+                predictions: formatResult
+            }
+            
+        }
+
+    }
+
 }
 
 export default PredictionService;
