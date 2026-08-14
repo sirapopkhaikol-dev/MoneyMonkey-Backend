@@ -57,6 +57,8 @@ class AuthService {
 
     static refresh = async (refreshToken) => {
 
+        if(!refreshToken) { throw new Error("User not Login") }
+
         const payload = JwtService.verifyRefreshToken(refreshToken);
 
         const user = await AuthRepository.findById(payload.id);
@@ -72,7 +74,10 @@ class AuthService {
         return {
             success: true,
             message: "Access token refreshed",
-            data : { accessToken }
+            data : { 
+                accessToken: accessToken,
+                user: user
+            }
         };
         
     }
