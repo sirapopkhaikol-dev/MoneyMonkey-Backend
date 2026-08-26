@@ -90,6 +90,32 @@ class PredictionRepository {
         }
     };
 
+    static findTotalRowsFiltered = async (
+        user_id,
+        min_amount,
+        max_amount,
+        min_years,
+        max_years
+    ) => {
+        // TODO: SQL
+        const result = await pool.query(
+            `
+            select count(*) as total
+            from prediction_request as pr
+            where pr.user_id = $1
+                and ($2::numeric is null or pr.initial_amount >= $2::numeric)
+                and ($3::numeric is null or pr.initial_amount <= $3::numeric)
+                and ($4::integer is null or pr.n_years >= $4::integer)
+                and ($5::integer is null or pr.n_years <= $5::integer)
+            `,
+            [user_id, min_amount, max_amount, min_years, max_years]
+        )
+
+        return {
+            rowCount: Number(result.rows[0].total)
+        }
+    };
+
     static findTotalRows = async (
         user_id,
     ) => {
@@ -106,6 +132,26 @@ class PredictionRepository {
         return Number(result.rows[0].total_count) ?? null
         
     };
+
+    static findRange = async (
+        user_id, 
+    ) => {
+        const result = await pool.query(
+            `
+            select 
+                min(pr.initial_amount) as min_amount,
+                max(pr.initial_amount) as max_amount,
+                min(pr.n_years) as min_years,
+                max(pr.n_years) as max_years
+            from prediction_request as pr
+            where pr.user_id = $1
+            `,
+            [user_id]
+        )    
+    
+        return result.rows[0] ?? null
+
+    }
 
     static findResultHistoryByPredictionId = async (
         user_id,

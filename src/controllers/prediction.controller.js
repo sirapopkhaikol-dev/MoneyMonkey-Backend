@@ -15,18 +15,27 @@ class PredictionController {
         // const { page, limit } = req.query;
         const page = Number(req.query.page);
         const limit = Number(req.query.limit);
-        const min_amount = req.query.min_amount !== undefined  ? Number(req.query.min_amount) : null ;
-        const max_amount = req.query.max_amount !== undefined  ? Number(req.query.max_amount) : null;
-        const min_years =  req.query.min_years !== undefined   ? Number(req.query.min_years) : null;
-        const max_years =  req.query.max_years !== undefined   ? Number(req.query.max_years) : null;
+        const min_amount = req.query.min_amount === undefined  ? null : Number(req.query.min_amount);
+        const max_amount = req.query.max_amount === undefined  ? null : Number(req.query.max_amount);
+        const min_years =  req.query.min_years === undefined   ? null : Number(req.query.min_years);
+        const max_years =  req.query.max_years === undefined   ? null  :Number(req.query.max_years);
 
         if (
-            page === NaN || 
-            limit === NaN || 
-            min_amount === NaN || 
-            max_amount === NaN ||
-            min_years === NaN ||
-            max_years === NaN
+            Number.isNaN(page) ||
+            Number.isNaN(limit) ||
+            page < 1 ||
+            limit < 1
+        ) {
+            throw new Error("Invalid pagination");
+        }
+
+        if (
+            Number.isNaN(page) ||
+            Number.isNaN(limit) ||
+            Number.isNaN(min_amount) ||
+            Number.isNaN(max_amount) ||
+            Number.isNaN(min_years) ||
+            Number.isNaN(max_years)
         ) {
             throw new Error("Need so send a number value");
         }
